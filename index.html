@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jindal Stainless | Employee Sentiment Analytics</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,9 +23,6 @@
             --accent-purple: #8b5cf6;
             --accent-cyan: #06b6d4;
             --border-color: #374151;
-            --gradient-1: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-            --gradient-2: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
-            --gradient-3: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,7 +59,7 @@
         .logo-icon {
             width: 48px;
             height: 48px;
-            background: var(--gradient-1);
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -72,15 +68,8 @@
             font-size: 20px;
         }
         
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-        
-        .logo p {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
+        .logo h1 { font-size: 24px; font-weight: 600; }
+        .logo p { font-size: 14px; color: var(--text-secondary); }
         
         .header-meta {
             text-align: right;
@@ -88,9 +77,7 @@
             color: var(--text-muted);
         }
         
-        .header-meta strong {
-            color: var(--text-secondary);
-        }
+        .header-meta strong { color: var(--text-secondary); }
         
         /* KPI Cards */
         .kpi-grid {
@@ -107,12 +94,6 @@
             border: 1px solid var(--border-color);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent-blue);
         }
         
         .kpi-card::before {
@@ -124,9 +105,9 @@
             height: 3px;
         }
         
-        .kpi-card.positive::before { background: var(--gradient-1); }
-        .kpi-card.negative::before { background: var(--gradient-2); }
-        .kpi-card.neutral::before { background: var(--gradient-3); }
+        .kpi-card.positive::before { background: linear-gradient(135deg, #10b981, #06b6d4); }
+        .kpi-card.negative::before { background: linear-gradient(135deg, #ef4444, #f59e0b); }
+        .kpi-card.neutral::before { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
         
         .kpi-label {
             font-size: 12px;
@@ -154,7 +135,7 @@
             margin-top: 8px;
         }
         
-        /* Grid Layout */
+        /* Grid Layouts */
         .grid-main {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -192,10 +173,7 @@
             align-items: center;
         }
         
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
+        .card-title { font-size: 16px; font-weight: 600; }
         
         .card-badge {
             font-size: 11px;
@@ -206,28 +184,20 @@
             font-weight: 500;
         }
         
-        .card-body {
-            padding: 24px;
-        }
+        .card-body { padding: 24px; }
+        .card-body.no-padding { padding: 0; }
         
-        .card-body.no-padding {
-            padding: 0;
-        }
-        
-        /* Charts */
+        /* Chart Container */
         .chart-container {
             position: relative;
             height: 280px;
+            width: 100%;
         }
         
-        .chart-container.small {
-            height: 200px;
-        }
+        .chart-container.small { height: 180px; }
         
         /* Theme Bars */
-        .theme-bar-container {
-            margin-bottom: 16px;
-        }
+        .theme-bar-container { margin-bottom: 16px; }
         
         .theme-bar-label {
             display: flex;
@@ -237,9 +207,7 @@
             font-size: 13px;
         }
         
-        .theme-bar-name {
-            color: var(--text-primary);
-        }
+        .theme-bar-name { color: var(--text-primary); }
         
         .theme-bar-count {
             font-family: 'JetBrains Mono', monospace;
@@ -252,7 +220,6 @@
             background: var(--bg-secondary);
             border-radius: 4px;
             overflow: hidden;
-            display: flex;
         }
         
         .theme-bar-fill {
@@ -261,10 +228,10 @@
             transition: width 0.5s ease;
         }
         
-        .theme-bar-fill.pros { background: var(--gradient-1); }
-        .theme-bar-fill.cons { background: var(--gradient-2); }
+        .theme-bar-fill.pros { background: linear-gradient(90deg, #10b981, #06b6d4); }
+        .theme-bar-fill.cons { background: linear-gradient(90deg, #ef4444, #f59e0b); }
         
-        /* Driver Impact Table */
+        /* Driver Table */
         .driver-table {
             width: 100%;
             border-collapse: collapse;
@@ -286,13 +253,8 @@
             background: var(--bg-secondary);
         }
         
-        .driver-table td {
-            font-size: 13px;
-        }
-        
-        .driver-table tr:hover td {
-            background: var(--bg-card-hover);
-        }
+        .driver-table td { font-size: 13px; }
+        .driver-table tr:hover td { background: var(--bg-card-hover); }
         
         .impact-badge {
             display: inline-block;
@@ -316,13 +278,8 @@
             border-bottom: 1px solid var(--border-color);
         }
         
-        .segment-stat:last-child {
-            border-bottom: none;
-        }
-        
-        .segment-name {
-            font-size: 14px;
-        }
+        .segment-stat:last-child { border-bottom: none; }
+        .segment-name { font-size: 14px; }
         
         .segment-values {
             display: flex;
@@ -345,13 +302,11 @@
         
         /* What-If Panel */
         .what-if-panel {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
             border-color: var(--accent-blue);
         }
         
-        .slider-container {
-            margin-bottom: 20px;
-        }
+        .slider-container { margin-bottom: 20px; }
         
         .slider-label {
             display: flex;
@@ -360,9 +315,7 @@
             margin-bottom: 8px;
         }
         
-        .slider-label span:first-child {
-            font-size: 13px;
-        }
+        .slider-label span:first-child { font-size: 13px; }
         
         .slider-value {
             font-family: 'JetBrains Mono', monospace;
@@ -386,7 +339,6 @@
             border-radius: 50%;
             background: var(--accent-cyan);
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(6, 182, 212, 0.4);
         }
         
         .prediction-box {
@@ -407,13 +359,10 @@
             font-size: 32px;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
         }
         
-        .prediction-delta {
-            font-size: 14px;
-            margin-top: 8px;
-        }
-        
+        .prediction-delta { font-size: 14px; margin-top: 8px; }
         .prediction-delta.positive { color: var(--accent-green); }
         .prediction-delta.negative { color: var(--accent-red); }
         
@@ -424,12 +373,9 @@
             align-items: center;
             padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
-            transition: background 0.2s;
         }
         
-        .hotspot-item:hover {
-            background: var(--bg-card-hover);
-        }
+        .hotspot-item:hover { background: var(--bg-card-hover); }
         
         .hotspot-rank {
             font-family: 'JetBrains Mono', monospace;
@@ -445,19 +391,9 @@
             margin-right: 12px;
         }
         
-        .hotspot-info {
-            flex: 1;
-        }
-        
-        .hotspot-name {
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .hotspot-meta {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
+        .hotspot-info { flex: 1; }
+        .hotspot-name { font-size: 14px; font-weight: 500; }
+        .hotspot-meta { font-size: 12px; color: var(--text-muted); }
         
         .hotspot-hi {
             font-family: 'JetBrains Mono', monospace;
@@ -466,68 +402,9 @@
             color: var(--accent-red);
         }
         
-        /* Action Items */
-        .action-section {
-            margin-top: 32px;
-        }
-        
-        .action-timeline {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        
-        .action-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid;
-        }
-        
-        .action-card.quick { border-color: var(--accent-green); }
-        .action-card.medium { border-color: var(--accent-amber); }
-        .action-card.structural { border-color: var(--accent-purple); }
-        
-        .action-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .action-timeline-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-        
-        .action-card.quick .action-timeline-label { color: var(--accent-green); }
-        .action-card.medium .action-timeline-label { color: var(--accent-amber); }
-        .action-card.structural .action-timeline-label { color: var(--accent-purple); }
-        
-        .action-list {
-            list-style: none;
-        }
-        
-        .action-list li {
-            font-size: 13px;
-            color: var(--text-secondary);
-            padding: 6px 0;
-            padding-left: 16px;
-            position: relative;
-        }
-        
-        .action-list li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--text-muted);
-        }
-        
         /* Executive Summary */
         .exec-summary {
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
             border-radius: 16px;
             padding: 28px;
             margin-bottom: 32px;
@@ -562,40 +439,190 @@
             color: var(--accent-cyan);
         }
         
-        /* Rating Distribution */
-        .rating-dist {
+        /* Rating Bars */
+        .rating-bars {
             display: flex;
             align-items: flex-end;
-            justify-content: center;
-            gap: 12px;
-            height: 120px;
-            padding: 16px;
+            justify-content: space-around;
+            height: 140px;
+            padding: 20px 10px;
         }
         
-        .rating-bar-wrapper {
+        .rating-bar-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
         }
         
+        .rating-bar-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
         .rating-bar {
-            width: 40px;
+            width: 45px;
             border-radius: 6px 6px 0 0;
-            transition: height 0.5s ease;
         }
         
         .rating-bar-label {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
         }
         
-        .rating-bar-count {
+        /* NPS Donut */
+        .nps-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .nps-donut {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+        
+        .nps-donut svg {
+            transform: rotate(-90deg);
+        }
+        
+        .nps-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .nps-score {
+            font-size: 28px;
+            font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-red);
+        }
+        
+        .nps-label {
             font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .nps-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+        }
+        
+        .nps-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
             color: var(--text-secondary);
         }
-
+        
+        .nps-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        /* Actions */
+        .action-section { margin-top: 32px; }
+        
+        .action-timeline {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .action-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid;
+        }
+        
+        .action-card.quick { border-color: var(--accent-green); }
+        .action-card.medium { border-color: var(--accent-amber); }
+        .action-card.structural { border-color: var(--accent-purple); }
+        
+        .action-header {
+            margin-bottom: 12px;
+        }
+        
+        .action-timeline-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .action-card.quick .action-timeline-label { color: var(--accent-green); }
+        .action-card.medium .action-timeline-label { color: var(--accent-amber); }
+        .action-card.structural .action-timeline-label { color: var(--accent-purple); }
+        
+        .action-list { list-style: none; }
+        
+        .action-list li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .action-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+        
+        /* Trend Chart SVG */
+        .trend-chart {
+            width: 100%;
+            height: 280px;
+        }
+        
+        .trend-line {
+            fill: none;
+            stroke: var(--accent-cyan);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .trend-area {
+            fill: url(#trendGradient);
+        }
+        
+        .trend-point {
+            fill: var(--accent-cyan);
+            stroke: var(--bg-card);
+            stroke-width: 2;
+        }
+        
+        .trend-label {
+            fill: var(--text-muted);
+            font-size: 12px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        .trend-value {
+            fill: var(--text-secondary);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .grid-line {
+            stroke: var(--border-color);
+            stroke-width: 1;
+            stroke-dasharray: 4, 4;
+        }
+        
         @media (max-width: 1200px) {
             .kpi-grid { grid-template-columns: repeat(3, 1fr); }
             .grid-main { grid-template-columns: 1fr; }
@@ -646,27 +673,27 @@
         <div class="kpi-grid">
             <div class="kpi-card positive">
                 <div class="kpi-label">Happiness Index</div>
-                <div class="kpi-value positive" id="kpi-hi">66.4</div>
+                <div class="kpi-value positive">66.4</div>
                 <div class="kpi-meta">0-100 scale | Target: 75+</div>
             </div>
             <div class="kpi-card negative">
                 <div class="kpi-label">eNPS Score</div>
-                <div class="kpi-value negative" id="kpi-enps">-12.1</div>
+                <div class="kpi-value negative">-12.1</div>
                 <div class="kpi-meta">25.1% Promoters | 37.2% Detractors</div>
             </div>
             <div class="kpi-card neutral">
                 <div class="kpi-label">Retention Rate</div>
-                <div class="kpi-value neutral" id="kpi-retention">68.0%</div>
+                <div class="kpi-value neutral">68.0%</div>
                 <div class="kpi-meta">Current vs Former employees</div>
             </div>
             <div class="kpi-card negative">
                 <div class="kpi-label">High Risk %</div>
-                <div class="kpi-value amber" id="kpi-risk">19.4%</div>
+                <div class="kpi-value amber">19.4%</div>
                 <div class="kpi-meta">Low HI + Former employee</div>
             </div>
             <div class="kpi-card neutral">
                 <div class="kpi-label">Avg Rating</div>
-                <div class="kpi-value neutral" id="kpi-rating">3.66</div>
+                <div class="kpi-value neutral">3.66</div>
                 <div class="kpi-meta">Out of 5 stars</div>
             </div>
         </div>
@@ -679,9 +706,58 @@
                     <span class="card-badge">Yearly</span>
                 </div>
                 <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="trendChart"></canvas>
-                    </div>
+                    <svg class="trend-chart" viewBox="0 0 700 280">
+                        <defs>
+                            <linearGradient id="trendGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.3" />
+                                <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Grid lines -->
+                        <line x1="60" y1="40" x2="680" y2="40" class="grid-line" />
+                        <line x1="60" y1="90" x2="680" y2="90" class="grid-line" />
+                        <line x1="60" y1="140" x2="680" y2="140" class="grid-line" />
+                        <line x1="60" y1="190" x2="680" y2="190" class="grid-line" />
+                        
+                        <!-- Y-axis labels -->
+                        <text x="50" y="44" class="trend-label" text-anchor="end">100</text>
+                        <text x="50" y="94" class="trend-label" text-anchor="end">80</text>
+                        <text x="50" y="144" class="trend-label" text-anchor="end">60</text>
+                        <text x="50" y="194" class="trend-label" text-anchor="end">40</text>
+                        
+                        <!-- Area fill -->
+                        <path class="trend-area" d="M 100 166 L 200 172 L 300 131 L 400 151 L 500 137 L 600 122 L 680 57 L 680 240 L 100 240 Z" />
+                        
+                        <!-- Line -->
+                        <path class="trend-line" d="M 100 166 L 200 172 L 300 131 L 400 151 L 500 137 L 600 122 L 680 57" />
+                        
+                        <!-- Data points -->
+                        <circle cx="100" cy="166" r="6" class="trend-point" />
+                        <circle cx="200" cy="172" r="6" class="trend-point" />
+                        <circle cx="300" cy="131" r="6" class="trend-point" />
+                        <circle cx="400" cy="151" r="6" class="trend-point" />
+                        <circle cx="500" cy="137" r="6" class="trend-point" />
+                        <circle cx="600" cy="122" r="6" class="trend-point" />
+                        <circle cx="680" cy="57" r="8" class="trend-point" />
+                        
+                        <!-- Values -->
+                        <text x="100" y="152" class="trend-value" text-anchor="middle">58.7</text>
+                        <text x="200" y="158" class="trend-value" text-anchor="middle">55.4</text>
+                        <text x="300" y="117" class="trend-value" text-anchor="middle">67.4</text>
+                        <text x="400" y="137" class="trend-value" text-anchor="middle">62.1</text>
+                        <text x="500" y="123" class="trend-value" text-anchor="middle">65.7</text>
+                        <text x="600" y="108" class="trend-value" text-anchor="middle">69.4</text>
+                        <text x="680" y="43" class="trend-value" text-anchor="middle" style="fill: #10b981; font-weight: bold;">85.8</text>
+                        
+                        <!-- X-axis labels -->
+                        <text x="100" y="260" class="trend-label" text-anchor="middle">2019</text>
+                        <text x="200" y="260" class="trend-label" text-anchor="middle">2020</text>
+                        <text x="300" y="260" class="trend-label" text-anchor="middle">2021</text>
+                        <text x="400" y="260" class="trend-label" text-anchor="middle">2022</text>
+                        <text x="500" y="260" class="trend-label" text-anchor="middle">2023</text>
+                        <text x="600" y="260" class="trend-label" text-anchor="middle">2024</text>
+                        <text x="680" y="260" class="trend-label" text-anchor="middle">2025</text>
+                    </svg>
                 </div>
             </div>
             <div class="card">
@@ -690,9 +766,69 @@
                     <span class="card-badge">All Time</span>
                 </div>
                 <div class="card-body">
-                    <div class="rating-dist" id="ratingDist"></div>
-                    <div class="chart-container small">
-                        <canvas id="ratingPie"></canvas>
+                    <!-- Rating Bars -->
+                    <div class="rating-bars">
+                        <div class="rating-bar-item">
+                            <div class="rating-bar-value">39</div>
+                            <div class="rating-bar" style="height: 35px; background: #ef4444;"></div>
+                            <div class="rating-bar-label">1★</div>
+                        </div>
+                        <div class="rating-bar-item">
+                            <div class="rating-bar-value">31</div>
+                            <div class="rating-bar" style="height: 28px; background: #f87171;"></div>
+                            <div class="rating-bar-label">2★</div>
+                        </div>
+                        <div class="rating-bar-item">
+                            <div class="rating-bar-value">114</div>
+                            <div class="rating-bar" style="height: 100px; background: #f59e0b;"></div>
+                            <div class="rating-bar-label">3★</div>
+                        </div>
+                        <div class="rating-bar-item">
+                            <div class="rating-bar-value">186</div>
+                            <div class="rating-bar" style="height: 160px; background: #34d399;"></div>
+                            <div class="rating-bar-label">4★</div>
+                        </div>
+                        <div class="rating-bar-item">
+                            <div class="rating-bar-value">124</div>
+                            <div class="rating-bar" style="height: 107px; background: #10b981;"></div>
+                            <div class="rating-bar-label">5★</div>
+                        </div>
+                    </div>
+                    
+                    <!-- NPS Donut -->
+                    <div class="nps-container">
+                        <div class="nps-donut">
+                            <svg width="160" height="160" viewBox="0 0 160 160">
+                                <circle cx="80" cy="80" r="60" fill="none" stroke="#374151" stroke-width="20" />
+                                <!-- Detractors: 37.2% = 134° -->
+                                <circle cx="80" cy="80" r="60" fill="none" stroke="#ef4444" stroke-width="20" 
+                                    stroke-dasharray="134 360" stroke-dashoffset="0" />
+                                <!-- Passives: 37.7% = 136° -->
+                                <circle cx="80" cy="80" r="60" fill="none" stroke="#f59e0b" stroke-width="20" 
+                                    stroke-dasharray="136 360" stroke-dashoffset="-134" />
+                                <!-- Promoters: 25.1% = 90° -->
+                                <circle cx="80" cy="80" r="60" fill="none" stroke="#10b981" stroke-width="20" 
+                                    stroke-dasharray="90 360" stroke-dashoffset="-270" />
+                            </svg>
+                            <div class="nps-center">
+                                <div class="nps-score">-12.1</div>
+                                <div class="nps-label">eNPS</div>
+                            </div>
+                        </div>
+                        <div class="nps-legend">
+                            <div class="nps-legend-item">
+                                <div class="nps-legend-dot" style="background: #10b981;"></div>
+                                <span>Promoters 25%</span>
+                            </div>
+                            <div class="nps-legend-item">
+                                <div class="nps-legend-dot" style="background: #f59e0b;"></div>
+                                <span>Passives 38%</span>
+                            </div>
+                            <div class="nps-legend-item">
+                                <div class="nps-legend-dot" style="background: #ef4444;"></div>
+                                <span>Detractors 37%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -706,7 +842,7 @@
                     <span class="card-badge">Pros vs Cons</span>
                 </div>
                 <div class="card-body" id="themeChart">
-                    <!-- Theme bars will be inserted here -->
+                    <!-- Theme bars rendered by JS -->
                 </div>
             </div>
             <div class="card">
@@ -723,8 +859,37 @@
                                 <th>Prevalence</th>
                             </tr>
                         </thead>
-                        <tbody id="driverTable">
-                            <!-- Driver rows will be inserted here -->
+                        <tbody>
+                            <tr>
+                                <td>Management & Leadership</td>
+                                <td><span class="impact-badge high">-15.5</span></td>
+                                <td>18.0% (n=89)</td>
+                            </tr>
+                            <tr>
+                                <td>Work Culture</td>
+                                <td><span class="impact-badge high">-14.9</span></td>
+                                <td>21.3% (n=105)</td>
+                            </tr>
+                            <tr>
+                                <td>Compensation</td>
+                                <td><span class="impact-badge medium">-9.4</span></td>
+                                <td>19.2% (n=95)</td>
+                            </tr>
+                            <tr>
+                                <td>Safety</td>
+                                <td><span class="impact-badge medium">-6.6</span></td>
+                                <td>4.3% (n=21)</td>
+                            </tr>
+                            <tr>
+                                <td>Work-Life Balance</td>
+                                <td><span class="impact-badge medium">-5.0</span></td>
+                                <td>18.0% (n=89)</td>
+                            </tr>
+                            <tr>
+                                <td>Growth & Learning</td>
+                                <td><span class="impact-badge low">-3.4</span></td>
+                                <td>14.6% (n=72)</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -737,24 +902,98 @@
                 <div class="card-header">
                     <span class="card-title">🏭 By Site Type</span>
                 </div>
-                <div class="card-body" id="siteStats">
-                    <!-- Site stats will be inserted here -->
+                <div class="card-body">
+                    <div class="segment-stat">
+                        <span class="segment-name">Plant</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #10b981;">69.7</span>
+                            <span class="segment-count">n=235</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">Corporate/Office</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #f59e0b;">63.5</span>
+                            <span class="segment-count">n=259</span>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">👔 By Job Level</span>
                 </div>
-                <div class="card-body" id="levelStats">
-                    <!-- Level stats will be inserted here -->
+                <div class="card-body">
+                    <div class="segment-stat">
+                        <span class="segment-name">Senior Management</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #10b981;">81.2</span>
+                            <span class="segment-count">n=16</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">Executive</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #10b981;">73.9</span>
+                            <span class="segment-count">n=46</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">Engineer</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #10b981;">71.1</span>
+                            <span class="segment-count">n=70</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">Management</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #f59e0b;">64.0</span>
+                            <span class="segment-count">n=211</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">Unknown</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #ef4444;">55.9</span>
+                            <span class="segment-count">n=94</span>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">⏳ By Tenure</span>
                 </div>
-                <div class="card-body" id="tenureStats">
-                    <!-- Tenure stats will be inserted here -->
+                <div class="card-body">
+                    <div class="segment-stat">
+                        <span class="segment-name">5+ years</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #10b981;">75.3</span>
+                            <span class="segment-count">n=97</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">3-5 years</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #f59e0b;">66.2</span>
+                            <span class="segment-count">n=77</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">0-1 years</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #f59e0b;">64.4</span>
+                            <span class="segment-count">n=212</span>
+                        </span>
+                    </div>
+                    <div class="segment-stat">
+                        <span class="segment-name">1-3 years</span>
+                        <span class="segment-values">
+                            <span class="segment-hi" style="color: #f59e0b;">62.7</span>
+                            <span class="segment-count">n=108</span>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -770,9 +1009,39 @@
                     <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
                         Adjust sliders to simulate impact of reducing complaints on each theme.
                     </p>
-                    <div id="whatIfSliders">
-                        <!-- Sliders will be inserted here -->
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Management & Leadership</span>
+                            <span class="slider-value" id="val-mgmt">0%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="0" id="slider-mgmt">
                     </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Work Culture</span>
+                            <span class="slider-value" id="val-culture">0%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="0" id="slider-culture">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Compensation</span>
+                            <span class="slider-value" id="val-comp">0%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="0" id="slider-comp">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Work-Life Balance</span>
+                            <span class="slider-value" id="val-wlb">0%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="0" id="slider-wlb">
+                    </div>
+                    
                     <div class="prediction-box">
                         <div class="prediction-label">Predicted Happiness Index</div>
                         <div class="prediction-value" id="predictedHI">66.4</div>
@@ -788,15 +1057,54 @@
                     <span class="card-title">🔥 Hotspot Locations</span>
                     <span class="card-badge">Lowest HI</span>
                 </div>
-                <div class="card-body no-padding" id="hotspotList">
-                    <!-- Hotspots will be inserted here -->
+                <div class="card-body no-padding">
+                    <div class="hotspot-item">
+                        <span class="hotspot-rank">1</span>
+                        <div class="hotspot-info">
+                            <div class="hotspot-name">Other / Unspecified</div>
+                            <div class="hotspot-meta">162 reviews</div>
+                        </div>
+                        <span class="hotspot-hi">62.8</span>
+                    </div>
+                    <div class="hotspot-item">
+                        <span class="hotspot-rank">2</span>
+                        <div class="hotspot-info">
+                            <div class="hotspot-name">Delhi NCR (Corporate)</div>
+                            <div class="hotspot-meta">80 reviews</div>
+                        </div>
+                        <span class="hotspot-hi">63.4</span>
+                    </div>
+                    <div class="hotspot-item">
+                        <span class="hotspot-rank">3</span>
+                        <div class="hotspot-info">
+                            <div class="hotspot-name">Jajpur (Plant)</div>
+                            <div class="hotspot-meta">144 reviews</div>
+                        </div>
+                        <span class="hotspot-hi" style="color: #f59e0b;">66.0</span>
+                    </div>
+                    <div class="hotspot-item">
+                        <span class="hotspot-rank">4</span>
+                        <div class="hotspot-info">
+                            <div class="hotspot-name">Mumbai (Office)</div>
+                            <div class="hotspot-meta">7 reviews</div>
+                        </div>
+                        <span class="hotspot-hi" style="color: #f59e0b;">67.9</span>
+                    </div>
+                    <div class="hotspot-item">
+                        <span class="hotspot-rank">5</span>
+                        <div class="hotspot-info">
+                            <div class="hotspot-name">Hisar (Plant)</div>
+                            <div class="hotspot-meta">78 reviews</div>
+                        </div>
+                        <span class="hotspot-hi" style="color: #10b981;">74.0</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Action Items -->
         <div class="action-section">
-            <h2 style="font-size: 18px; margin-bottom: 20px; color: var(--accent-cyan);">🚀 Recommended Actions</h2>
+            <h2 style="font-size: 18px; margin-bottom: 20px; color: #06b6d4;">🚀 Recommended Actions</h2>
             <div class="action-timeline">
                 <div class="action-card quick">
                     <div class="action-header">
@@ -836,184 +1144,32 @@
     </div>
 
     <script>
-        // Dashboard Data
-        const data = {
-            kpi: { happiness_index: 66.4, dissatisfaction_index: 33.6, enps: -12.1, retention_rate: 68.0, total_reviews: 494, promoters_pct: 25.1, detractors_pct: 37.2, high_risk_pct: 19.4, avg_rating: 3.66 },
-            yearly_trend: [
-                { year: 2019, hi: 58.7, count: 26 },
-                { year: 2020, hi: 55.4, count: 37 },
-                { year: 2021, hi: 67.4, count: 66 },
-                { year: 2022, hi: 62.1, count: 56 },
-                { year: 2023, hi: 65.7, count: 54 },
-                { year: 2024, hi: 69.4, count: 58 },
-                { year: 2025, hi: 85.8, count: 88 }
-            ],
-            site_stats: [
-                { site_type: "Plant", happiness_index: 69.7, rating: 235 },
-                { site_type: "Corporate/Office", happiness_index: 63.5, rating: 259 }
-            ],
-            level_stats: [
-                { level: "Senior Management", happiness_index: 81.2, rating: 16 },
-                { level: "Executive", happiness_index: 73.9, rating: 46 },
-                { level: "Engineer", happiness_index: 71.1, rating: 70 },
-                { level: "Management", happiness_index: 64.0, rating: 211 },
-                { level: "Unknown", happiness_index: 55.9, rating: 94 }
-            ],
-            tenure_stats: [
-                { tenure_band: "5+ years", happiness_index: 75.3, rating: 97 },
-                { tenure_band: "3-5 years", happiness_index: 66.2, rating: 77 },
-                { tenure_band: "0-1 years", happiness_index: 64.4, rating: 212 },
-                { tenure_band: "1-3 years", happiness_index: 62.7, rating: 108 }
-            ],
-            pros_themes: { "Work Culture": 141, "Growth & Learning": 145, "Compensation": 92, "Work-Life Balance": 40, "Management & Leadership": 89, "Location": 19, "Job Security": 31, "Infrastructure": 15, "Safety": 14 },
-            cons_themes: { "Work Culture": 105, "Growth & Learning": 72, "Compensation": 95, "Work-Life Balance": 89, "Management & Leadership": 89, "Location": 38, "Job Security": 2, "Infrastructure": 20, "Safety": 21 },
-            drivers: [
-                { theme: "Management & Leadership", coefficient: -15.5, prevalence: 18.0, count: 89 },
-                { theme: "Work Culture", coefficient: -14.94, prevalence: 21.3, count: 105 },
-                { theme: "Compensation", coefficient: -9.44, prevalence: 19.2, count: 95 },
-                { theme: "Safety", coefficient: -6.57, prevalence: 4.3, count: 21 },
-                { theme: "Work-Life Balance", coefficient: -5.0, prevalence: 18.0, count: 89 },
-                { theme: "Growth & Learning", coefficient: -3.44, prevalence: 14.6, count: 72 }
-            ],
-            location_stats: [
-                { location_clean: "Other", hi: 62.8, count: 162 },
-                { location_clean: "Delhi NCR (Corporate)", hi: 63.4, count: 80 },
-                { location_clean: "Jajpur (Plant)", hi: 66.0, count: 144 },
-                { location_clean: "Mumbai (Office)", hi: 67.9, count: 7 },
-                { location_clean: "Hisar (Plant)", hi: 74.0, count: 78 }
-            ],
-            rating_distribution: { "1.0": 39, "2.0": 31, "3.0": 114, "4.0": 186, "5.0": 124 },
-            model_intercept: 75.46
-        };
-
-        // Colors
-        const colors = {
-            green: '#10b981',
-            greenLight: '#34d399',
-            red: '#ef4444',
-            redLight: '#f87171',
-            amber: '#f59e0b',
-            blue: '#3b82f6',
-            purple: '#8b5cf6',
-            cyan: '#06b6d4'
-        };
-
-        // Trend Chart
-        const trendCtx = document.getElementById('trendChart').getContext('2d');
-        new Chart(trendCtx, {
-            type: 'line',
-            data: {
-                labels: data.yearly_trend.map(d => d.year),
-                datasets: [{
-                    label: 'Happiness Index',
-                    data: data.yearly_trend.map(d => d.hi),
-                    borderColor: colors.cyan,
-                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 6,
-                    pointBackgroundColor: colors.cyan,
-                    pointBorderColor: '#1a2234',
-                    pointBorderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1a2234',
-                        titleColor: '#f9fafb',
-                        bodyColor: '#9ca3af',
-                        borderColor: '#374151',
-                        borderWidth: 1,
-                        padding: 12,
-                        callbacks: {
-                            afterLabel: function(context) {
-                                const idx = context.dataIndex;
-                                return `Reviews: ${data.yearly_trend[idx].count}`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { color: 'rgba(55, 65, 81, 0.3)' },
-                        ticks: { color: '#9ca3af' }
-                    },
-                    y: {
-                        min: 40,
-                        max: 100,
-                        grid: { color: 'rgba(55, 65, 81, 0.3)' },
-                        ticks: { color: '#9ca3af' }
-                    }
-                }
-            }
-        });
-
-        // Rating Distribution
-        const ratingDist = document.getElementById('ratingDist');
-        const maxCount = Math.max(...Object.values(data.rating_distribution));
-        const ratingColors = [colors.red, colors.redLight, colors.amber, colors.greenLight, colors.green];
+        // Theme data
+        const themes = [
+            { name: 'Work Culture', pros: 141, cons: 105 },
+            { name: 'Growth & Learning', pros: 145, cons: 72 },
+            { name: 'Compensation', pros: 92, cons: 95 },
+            { name: 'Management & Leadership', pros: 89, cons: 89 },
+            { name: 'Work-Life Balance', pros: 40, cons: 89 },
+            { name: 'Location', pros: 19, cons: 38 },
+            { name: 'Safety', pros: 14, cons: 21 },
+            { name: 'Infrastructure', pros: 15, cons: 20 }
+        ];
         
-        Object.entries(data.rating_distribution).forEach(([rating, count], idx) => {
-            const height = (count / maxCount) * 100;
-            const wrapper = document.createElement('div');
-            wrapper.className = 'rating-bar-wrapper';
-            wrapper.innerHTML = `
-                <div class="rating-bar-count">${count}</div>
-                <div class="rating-bar" style="height: ${height}px; background: ${ratingColors[idx]}"></div>
-                <div class="rating-bar-label">${rating.replace('.0', ')}★</div>
-            `;
-            ratingDist.appendChild(wrapper);
-        });
-
-        // Rating Pie Chart
-        const pieCtx = document.getElementById('ratingPie').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Promoters (5★)', 'Passives (4★)', 'Detractors (1-3★)'],
-                datasets: [{
-                    data: [data.kpi.promoters_pct, 37.7, data.kpi.detractors_pct],
-                    backgroundColor: [colors.green, colors.amber, colors.red],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: '#9ca3af', padding: 12, usePointStyle: true }
-                    }
-                }
-            }
-        });
-
-        // Theme Sentiment Bars
+        // Render theme bars
         const themeChart = document.getElementById('themeChart');
-        const allThemes = [...new Set([...Object.keys(data.pros_themes), ...Object.keys(data.cons_themes)])];
-        const maxThemeCount = Math.max(...Object.values(data.pros_themes), ...Object.values(data.cons_themes));
+        const maxCount = Math.max(...themes.map(t => Math.max(t.pros, t.cons)));
         
-        allThemes.sort((a, b) => (data.cons_themes[b] || 0) - (data.cons_themes[a] || 0));
-        
-        allThemes.slice(0, 8).forEach(theme => {
-            const pros = data.pros_themes[theme] || 0;
-            const cons = data.cons_themes[theme] || 0;
-            const prosWidth = (pros / maxThemeCount) * 100;
-            const consWidth = (cons / maxThemeCount) * 100;
+        themes.forEach(theme => {
+            const prosWidth = (theme.pros / maxCount) * 100;
+            const consWidth = (theme.cons / maxCount) * 100;
             
             const container = document.createElement('div');
             container.className = 'theme-bar-container';
             container.innerHTML = `
                 <div class="theme-bar-label">
-                    <span class="theme-bar-name">${theme}</span>
-                    <span class="theme-bar-count">+${pros} / -${cons}</span>
+                    <span class="theme-bar-name">${theme.name}</span>
+                    <span class="theme-bar-count">+${theme.pros} / -${theme.cons}</span>
                 </div>
                 <div class="theme-bar">
                     <div class="theme-bar-fill pros" style="width: ${prosWidth}%"></div>
@@ -1024,103 +1180,26 @@
             `;
             themeChart.appendChild(container);
         });
-
-        // Driver Table
-        const driverTable = document.getElementById('driverTable');
-        data.drivers.forEach(driver => {
-            const impact = Math.abs(driver.coefficient);
-            let impactClass = 'low';
-            if (impact > 12) impactClass = 'high';
-            else if (impact > 5) impactClass = 'medium';
-            
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${driver.theme}</td>
-                <td><span class="impact-badge ${impactClass}">${driver.coefficient.toFixed(1)}</span></td>
-                <td>${driver.prevalence}% (n=${driver.count})</td>
-            `;
-            driverTable.appendChild(row);
-        });
-
-        // Segment Stats Helper
-        function renderSegmentStats(containerId, stats, valueKey = 'happiness_index', labelKey = 'site_type') {
-            const container = document.getElementById(containerId);
-            stats.forEach(item => {
-                const label = item[labelKey] || item.level || item.tenure_band;
-                const hi = item[valueKey];
-                const count = item.rating;
-                const hiColor = hi >= 70 ? colors.green : (hi >= 60 ? colors.amber : colors.red);
-                
-                const div = document.createElement('div');
-                div.className = 'segment-stat';
-                div.innerHTML = `
-                    <span class="segment-name">${label}</span>
-                    <span class="segment-values">
-                        <span class="segment-hi" style="color: ${hiColor}">${hi.toFixed(1)}</span>
-                        <span class="segment-count">n=${count}</span>
-                    </span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        renderSegmentStats('siteStats', data.site_stats);
-        renderSegmentStats('levelStats', data.level_stats, 'happiness_index', 'level');
-        renderSegmentStats('tenureStats', data.tenure_stats, 'happiness_index', 'tenure_band');
-
-        // Hotspots
-        const hotspotList = document.getElementById('hotspotList');
-        data.location_stats.slice(0, 5).forEach((loc, idx) => {
-            const div = document.createElement('div');
-            div.className = 'hotspot-item';
-            div.innerHTML = `
-                <span class="hotspot-rank">${idx + 1}</span>
-                <div class="hotspot-info">
-                    <div class="hotspot-name">${loc.location_clean}</div>
-                    <div class="hotspot-meta">${loc.count} reviews</div>
-                </div>
-                <span class="hotspot-hi">${loc.hi.toFixed(1)}</span>
-            `;
-            hotspotList.appendChild(div);
-        });
-
-        // What-If Sliders
-        const whatIfSliders = document.getElementById('whatIfSliders');
-        const sliderState = {};
-        const baselineHI = data.kpi.happiness_index;
         
-        data.drivers.slice(0, 4).forEach(driver => {
-            sliderState[driver.theme] = 0;
-            
-            const container = document.createElement('div');
-            container.className = 'slider-container';
-            container.innerHTML = `
-                <div class="slider-label">
-                    <span>${driver.theme}</span>
-                    <span class="slider-value" id="val-${driver.theme.replace(/\s+/g, '-')}">0%</span>
-                </div>
-                <input type="range" min="0" max="100" value="0" 
-                    id="slider-${driver.theme.replace(/\s+/g, '-')}"
-                    data-theme="${driver.theme}"
-                    data-coef="${driver.coefficient}"
-                    data-prev="${driver.prevalence}">
-            `;
-            whatIfSliders.appendChild(container);
-        });
-
-        // What-If Calculation
+        // What-If calculation
+        const baselineHI = 66.4;
+        const drivers = {
+            mgmt: { coef: -15.5, prev: 0.18 },
+            culture: { coef: -14.94, prev: 0.213 },
+            comp: { coef: -9.44, prev: 0.192 },
+            wlb: { coef: -5.0, prev: 0.18 }
+        };
+        
         function calculatePrediction() {
             let deltaHI = 0;
             
-            data.drivers.forEach(driver => {
-                const sliderId = `slider-${driver.theme.replace(/\s+/g, '-')}`;
-                const slider = document.getElementById(sliderId);
-                if (slider) {
-                    const reduction = parseInt(slider.value) / 100;
-                    const prevalenceChange = (driver.prevalence / 100) * reduction;
-                    const impact = driver.coefficient * prevalenceChange * -1;
-                    deltaHI += impact;
-                }
+            Object.keys(drivers).forEach(key => {
+                const slider = document.getElementById(`slider-${key}`);
+                const reduction = parseInt(slider.value) / 100;
+                const impact = drivers[key].coef * drivers[key].prev * reduction * -1;
+                deltaHI += impact;
+                
+                document.getElementById(`val-${key}`).textContent = `${slider.value}%`;
             });
             
             const predictedHI = baselineHI + deltaHI;
@@ -1138,15 +1217,10 @@
                 deltaEl.className = 'prediction-delta';
             }
         }
-
-        // Slider Event Listeners
-        document.querySelectorAll('input[type="range"]').forEach(slider => {
-            slider.addEventListener('input', function() {
-                const theme = this.dataset.theme;
-                const valId = `val-${theme.replace(/\s+/g, '-')}`;
-                document.getElementById(valId).textContent = `${this.value}%`;
-                calculatePrediction();
-            });
+        
+        // Add event listeners to sliders
+        ['mgmt', 'culture', 'comp', 'wlb'].forEach(key => {
+            document.getElementById(`slider-${key}`).addEventListener('input', calculatePrediction);
         });
     </script>
 </body>
