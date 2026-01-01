@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jindal Stainless | Employee Sentiment Analytics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1c;
+            --bg-secondary: #111827;
+            --bg-card: #1a2234;
+            --bg-card-hover: #1f2a40;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-green: #10b981;
+            --accent-green-light: #34d399;
+            --accent-red: #ef4444;
+            --accent-red-light: #f87171;
+            --accent-amber: #f59e0b;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --border-color: #374151;
+            --gradient-1: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --gradient-2: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+            --gradient-3: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .logo p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .header-meta {
+            text-align: right;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .header-meta strong {
+            color: var(--text-secondary);
+        }
+        
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .kpi-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-blue);
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        
+        .kpi-card.positive::before { background: var(--gradient-1); }
+        .kpi-card.negative::before { background: var(--gradient-2); }
+        .kpi-card.neutral::before { background: var(--gradient-3); }
+        
+        .kpi-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1;
+        }
+        
+        .kpi-value.positive { color: var(--accent-green); }
+        .kpi-value.negative { color: var(--accent-red); }
+        .kpi-value.neutral { color: var(--accent-blue); }
+        .kpi-value.amber { color: var(--accent-amber); }
+        
+        .kpi-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        /* Grid Layout */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .grid-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .grid-three {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .card-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+        
+        .card-body {
+            padding: 24px;
+        }
+        
+        .card-body.no-padding {
+            padding: 0;
+        }
+        
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+        
+        .chart-container.small {
+            height: 200px;
+        }
+        
+        /* Theme Bars */
+        .theme-bar-container {
+            margin-bottom: 16px;
+        }
+        
+        .theme-bar-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        
+        .theme-bar-name {
+            color: var(--text-primary);
+        }
+        
+        .theme-bar-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .theme-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+        
+        .theme-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .theme-bar-fill.pros { background: var(--gradient-1); }
+        .theme-bar-fill.cons { background: var(--gradient-2); }
+        
+        /* Driver Impact Table */
+        .driver-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .driver-table th,
+        .driver-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .driver-table th {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 500;
+            background: var(--bg-secondary);
+        }
+        
+        .driver-table td {
+            font-size: 13px;
+        }
+        
+        .driver-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+        
+        .impact-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        
+        .impact-badge.high { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .impact-badge.medium { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+        .impact-badge.low { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        
+        /* Segment Stats */
+        .segment-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .segment-stat:last-child {
+            border-bottom: none;
+        }
+        
+        .segment-name {
+            font-size: 14px;
+        }
+        
+        .segment-values {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .segment-hi {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .segment-count {
+            font-size: 12px;
+            color: var(--text-muted);
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        /* What-If Panel */
+        .what-if-panel {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-color: var(--accent-blue);
+        }
+        
+        .slider-container {
+            margin-bottom: 20px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .slider-label span:first-child {
+            font-size: 13px;
+        }
+        
+        .slider-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-secondary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(6, 182, 212, 0.4);
+        }
+        
+        .prediction-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .prediction-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .prediction-value {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .prediction-delta {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .prediction-delta.positive { color: var(--accent-green); }
+        .prediction-delta.negative { color: var(--accent-red); }
+        
+        /* Hotspots */
+        .hotspot-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        
+        .hotspot-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .hotspot-rank {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-red);
+            background: rgba(239, 68, 68, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .hotspot-info {
+            flex: 1;
+        }
+        
+        .hotspot-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .hotspot-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .hotspot-hi {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent-red);
+        }
+        
+        /* Action Items */
+        .action-section {
+            margin-top: 32px;
+        }
+        
+        .action-timeline {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .action-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid;
+        }
+        
+        .action-card.quick { border-color: var(--accent-green); }
+        .action-card.medium { border-color: var(--accent-amber); }
+        .action-card.structural { border-color: var(--accent-purple); }
+        
+        .action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .action-timeline-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .action-card.quick .action-timeline-label { color: var(--accent-green); }
+        .action-card.medium .action-timeline-label { color: var(--accent-amber); }
+        .action-card.structural .action-timeline-label { color: var(--accent-purple); }
+        
+        .action-list {
+            list-style: none;
+        }
+        
+        .action-list li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .action-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+        
+        /* Executive Summary */
+        .exec-summary {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .exec-summary h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--accent-cyan);
+        }
+        
+        .exec-summary ul {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 32px;
+            list-style: none;
+        }
+        
+        .exec-summary li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .exec-summary li::before {
+            content: '●';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+        }
+        
+        /* Rating Distribution */
+        .rating-dist {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 12px;
+            height: 120px;
+            padding: 16px;
+        }
+        
+        .rating-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .rating-bar {
+            width: 40px;
+            border-radius: 6px 6px 0 0;
+            transition: height 0.5s ease;
+        }
+        
+        .rating-bar-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .rating-bar-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+            .grid-main { grid-template-columns: 1fr; }
+            .grid-three { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media (max-width: 768px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .grid-two, .grid-three { grid-template-columns: 1fr; }
+            .action-timeline { grid-template-columns: 1fr; }
+            .exec-summary ul { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">JS</div>
+                <div>
+                    <h1>Jindal Stainless</h1>
+                    <p>Employee Sentiment Analytics Dashboard</p>
+                </div>
+            </div>
+            <div class="header-meta">
+                <div>Data Source: <strong>Glassdoor Reviews</strong></div>
+                <div>Period: <strong>2017 – Oct 2025</strong></div>
+                <div>Total Reviews: <strong>494</strong></div>
+            </div>
+        </header>
+
+        <!-- Executive Summary -->
+        <div class="exec-summary">
+            <h2>📊 Executive Summary</h2>
+            <ul>
+                <li><strong>Overall Happiness Index at 66.4</strong> – moderate satisfaction; room for improvement in middle-management layers</li>
+                <li><strong>eNPS of -12.1</strong> indicates 37% detractors vs 25% promoters – priority to convert passives (38%)</li>
+                <li><strong>Plant locations score 6pts higher</strong> (69.7) than Corporate/Office (63.5) – investigate corporate pain points</li>
+                <li><strong>Top dissatisfaction drivers:</strong> Management & Leadership (-15.5), Work Culture (-14.9), Compensation (-9.4)</li>
+                <li><strong>Longest-tenured employees (5+ yrs) happiest</strong> (HI: 75.3) – retention strategy working for loyalists</li>
+                <li><strong>Sharp improvement in 2025</strong> (HI: 85.8) – recent initiatives showing positive impact</li>
+                <li><strong>19.4% high-risk reviews</strong> – Former employees with low ratings concentrated in Management level</li>
+                <li><strong>What-If:</strong> Reducing Management complaints by 50% could lift HI by +1.4 points</li>
+            </ul>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card positive">
+                <div class="kpi-label">Happiness Index</div>
+                <div class="kpi-value positive" id="kpi-hi">66.4</div>
+                <div class="kpi-meta">0-100 scale | Target: 75+</div>
+            </div>
+            <div class="kpi-card negative">
+                <div class="kpi-label">eNPS Score</div>
+                <div class="kpi-value negative" id="kpi-enps">-12.1</div>
+                <div class="kpi-meta">25.1% Promoters | 37.2% Detractors</div>
+            </div>
+            <div class="kpi-card neutral">
+                <div class="kpi-label">Retention Rate</div>
+                <div class="kpi-value neutral" id="kpi-retention">68.0%</div>
+                <div class="kpi-meta">Current vs Former employees</div>
+            </div>
+            <div class="kpi-card negative">
+                <div class="kpi-label">High Risk %</div>
+                <div class="kpi-value amber" id="kpi-risk">19.4%</div>
+                <div class="kpi-meta">Low HI + Former employee</div>
+            </div>
+            <div class="kpi-card neutral">
+                <div class="kpi-label">Avg Rating</div>
+                <div class="kpi-value neutral" id="kpi-rating">3.66</div>
+                <div class="kpi-meta">Out of 5 stars</div>
+            </div>
+        </div>
+
+        <!-- Main Charts Row -->
+        <div class="grid-main">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📈 Happiness Index Trend (2019-2025)</span>
+                    <span class="card-badge">Yearly</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">⭐ Rating Distribution</span>
+                    <span class="card-badge">All Time</span>
+                </div>
+                <div class="card-body">
+                    <div class="rating-dist" id="ratingDist"></div>
+                    <div class="chart-container small">
+                        <canvas id="ratingPie"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Themes & Drivers Row -->
+        <div class="grid-two">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">💬 Theme Sentiment Analysis</span>
+                    <span class="card-badge">Pros vs Cons</span>
+                </div>
+                <div class="card-body" id="themeChart">
+                    <!-- Theme bars will be inserted here -->
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🎯 Top Dissatisfaction Drivers</span>
+                    <span class="card-badge">Regression Analysis</span>
+                </div>
+                <div class="card-body no-padding">
+                    <table class="driver-table">
+                        <thead>
+                            <tr>
+                                <th>Theme</th>
+                                <th>Impact</th>
+                                <th>Prevalence</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driverTable">
+                            <!-- Driver rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segments Row -->
+        <div class="grid-three">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🏭 By Site Type</span>
+                </div>
+                <div class="card-body" id="siteStats">
+                    <!-- Site stats will be inserted here -->
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">👔 By Job Level</span>
+                </div>
+                <div class="card-body" id="levelStats">
+                    <!-- Level stats will be inserted here -->
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">⏳ By Tenure</span>
+                </div>
+                <div class="card-body" id="tenureStats">
+                    <!-- Tenure stats will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- What-If & Hotspots Row -->
+        <div class="grid-two">
+            <div class="card what-if-panel">
+                <div class="card-header">
+                    <span class="card-title">🔮 What-If Simulation</span>
+                    <span class="card-badge">Predictive Model</span>
+                </div>
+                <div class="card-body">
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+                        Adjust sliders to simulate impact of reducing complaints on each theme.
+                    </p>
+                    <div id="whatIfSliders">
+                        <!-- Sliders will be inserted here -->
+                    </div>
+                    <div class="prediction-box">
+                        <div class="prediction-label">Predicted Happiness Index</div>
+                        <div class="prediction-value" id="predictedHI">66.4</div>
+                        <div class="prediction-delta" id="predictedDelta">No change from baseline</div>
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 16px;">
+                        Model R² = 0.149 | Intercept = 75.46 | Linear regression on theme prevalence
+                    </p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🔥 Hotspot Locations</span>
+                    <span class="card-badge">Lowest HI</span>
+                </div>
+                <div class="card-body no-padding" id="hotspotList">
+                    <!-- Hotspots will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Items -->
+        <div class="action-section">
+            <h2 style="font-size: 18px; margin-bottom: 20px; color: var(--accent-cyan);">🚀 Recommended Actions</h2>
+            <div class="action-timeline">
+                <div class="action-card quick">
+                    <div class="action-header">
+                        <span class="action-timeline-label">Quick Wins (30 Days)</span>
+                    </div>
+                    <ul class="action-list">
+                        <li>Launch manager feedback survey at Corporate/Office locations</li>
+                        <li>Communicate salary review timeline transparently</li>
+                        <li>Recognize top-performing teams publicly</li>
+                        <li>Address Work-Life Balance concerns in town halls</li>
+                    </ul>
+                </div>
+                <div class="action-card medium">
+                    <div class="action-header">
+                        <span class="action-timeline-label">Medium Term (90 Days)</span>
+                    </div>
+                    <ul class="action-list">
+                        <li>Manager training program on leadership & communication</li>
+                        <li>Compensation benchmarking study vs industry</li>
+                        <li>Implement skip-level meetings for escalation paths</li>
+                        <li>Create career path visibility for 1-3 year tenure band</li>
+                    </ul>
+                </div>
+                <div class="action-card structural">
+                    <div class="action-header">
+                        <span class="action-timeline-label">Structural (6 Months)</span>
+                    </div>
+                    <ul class="action-list">
+                        <li>Redesign performance management system</li>
+                        <li>Overhaul compensation structure with clear bands</li>
+                        <li>Culture transformation program for Corporate offices</li>
+                        <li>Build internal mobility & rotation opportunities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Data
+        const data = {
+            kpi: { happiness_index: 66.4, dissatisfaction_index: 33.6, enps: -12.1, retention_rate: 68.0, total_reviews: 494, promoters_pct: 25.1, detractors_pct: 37.2, high_risk_pct: 19.4, avg_rating: 3.66 },
+            yearly_trend: [
+                { year: 2019, hi: 58.7, count: 26 },
+                { year: 2020, hi: 55.4, count: 37 },
+                { year: 2021, hi: 67.4, count: 66 },
+                { year: 2022, hi: 62.1, count: 56 },
+                { year: 2023, hi: 65.7, count: 54 },
+                { year: 2024, hi: 69.4, count: 58 },
+                { year: 2025, hi: 85.8, count: 88 }
+            ],
+            site_stats: [
+                { site_type: "Plant", happiness_index: 69.7, rating: 235 },
+                { site_type: "Corporate/Office", happiness_index: 63.5, rating: 259 }
+            ],
+            level_stats: [
+                { level: "Senior Management", happiness_index: 81.2, rating: 16 },
+                { level: "Executive", happiness_index: 73.9, rating: 46 },
+                { level: "Engineer", happiness_index: 71.1, rating: 70 },
+                { level: "Management", happiness_index: 64.0, rating: 211 },
+                { level: "Unknown", happiness_index: 55.9, rating: 94 }
+            ],
+            tenure_stats: [
+                { tenure_band: "5+ years", happiness_index: 75.3, rating: 97 },
+                { tenure_band: "3-5 years", happiness_index: 66.2, rating: 77 },
+                { tenure_band: "0-1 years", happiness_index: 64.4, rating: 212 },
+                { tenure_band: "1-3 years", happiness_index: 62.7, rating: 108 }
+            ],
+            pros_themes: { "Work Culture": 141, "Growth & Learning": 145, "Compensation": 92, "Work-Life Balance": 40, "Management & Leadership": 89, "Location": 19, "Job Security": 31, "Infrastructure": 15, "Safety": 14 },
+            cons_themes: { "Work Culture": 105, "Growth & Learning": 72, "Compensation": 95, "Work-Life Balance": 89, "Management & Leadership": 89, "Location": 38, "Job Security": 2, "Infrastructure": 20, "Safety": 21 },
+            drivers: [
+                { theme: "Management & Leadership", coefficient: -15.5, prevalence: 18.0, count: 89 },
+                { theme: "Work Culture", coefficient: -14.94, prevalence: 21.3, count: 105 },
+                { theme: "Compensation", coefficient: -9.44, prevalence: 19.2, count: 95 },
+                { theme: "Safety", coefficient: -6.57, prevalence: 4.3, count: 21 },
+                { theme: "Work-Life Balance", coefficient: -5.0, prevalence: 18.0, count: 89 },
+                { theme: "Growth & Learning", coefficient: -3.44, prevalence: 14.6, count: 72 }
+            ],
+            location_stats: [
+                { location_clean: "Other", hi: 62.8, count: 162 },
+                { location_clean: "Delhi NCR (Corporate)", hi: 63.4, count: 80 },
+                { location_clean: "Jajpur (Plant)", hi: 66.0, count: 144 },
+                { location_clean: "Mumbai (Office)", hi: 67.9, count: 7 },
+                { location_clean: "Hisar (Plant)", hi: 74.0, count: 78 }
+            ],
+            rating_distribution: { "1.0": 39, "2.0": 31, "3.0": 114, "4.0": 186, "5.0": 124 },
+            model_intercept: 75.46
+        };
+
+        // Colors
+        const colors = {
+            green: '#10b981',
+            greenLight: '#34d399',
+            red: '#ef4444',
+            redLight: '#f87171',
+            amber: '#f59e0b',
+            blue: '#3b82f6',
+            purple: '#8b5cf6',
+            cyan: '#06b6d4'
+        };
+
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: data.yearly_trend.map(d => d.year),
+                datasets: [{
+                    label: 'Happiness Index',
+                    data: data.yearly_trend.map(d => d.hi),
+                    borderColor: colors.cyan,
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: colors.cyan,
+                    pointBorderColor: '#1a2234',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1a2234',
+                        titleColor: '#f9fafb',
+                        bodyColor: '#9ca3af',
+                        borderColor: '#374151',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            afterLabel: function(context) {
+                                const idx = context.dataIndex;
+                                return `Reviews: ${data.yearly_trend[idx].count}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(55, 65, 81, 0.3)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    y: {
+                        min: 40,
+                        max: 100,
+                        grid: { color: 'rgba(55, 65, 81, 0.3)' },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Rating Distribution
+        const ratingDist = document.getElementById('ratingDist');
+        const maxCount = Math.max(...Object.values(data.rating_distribution));
+        const ratingColors = [colors.red, colors.redLight, colors.amber, colors.greenLight, colors.green];
+        
+        Object.entries(data.rating_distribution).forEach(([rating, count], idx) => {
+            const height = (count / maxCount) * 100;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'rating-bar-wrapper';
+            wrapper.innerHTML = `
+                <div class="rating-bar-count">${count}</div>
+                <div class="rating-bar" style="height: ${height}px; background: ${ratingColors[idx]}"></div>
+                <div class="rating-bar-label">${rating.replace('.0', ')}★</div>
+            `;
+            ratingDist.appendChild(wrapper);
+        });
+
+        // Rating Pie Chart
+        const pieCtx = document.getElementById('ratingPie').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Promoters (5★)', 'Passives (4★)', 'Detractors (1-3★)'],
+                datasets: [{
+                    data: [data.kpi.promoters_pct, 37.7, data.kpi.detractors_pct],
+                    backgroundColor: [colors.green, colors.amber, colors.red],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#9ca3af', padding: 12, usePointStyle: true }
+                    }
+                }
+            }
+        });
+
+        // Theme Sentiment Bars
+        const themeChart = document.getElementById('themeChart');
+        const allThemes = [...new Set([...Object.keys(data.pros_themes), ...Object.keys(data.cons_themes)])];
+        const maxThemeCount = Math.max(...Object.values(data.pros_themes), ...Object.values(data.cons_themes));
+        
+        allThemes.sort((a, b) => (data.cons_themes[b] || 0) - (data.cons_themes[a] || 0));
+        
+        allThemes.slice(0, 8).forEach(theme => {
+            const pros = data.pros_themes[theme] || 0;
+            const cons = data.cons_themes[theme] || 0;
+            const prosWidth = (pros / maxThemeCount) * 100;
+            const consWidth = (cons / maxThemeCount) * 100;
+            
+            const container = document.createElement('div');
+            container.className = 'theme-bar-container';
+            container.innerHTML = `
+                <div class="theme-bar-label">
+                    <span class="theme-bar-name">${theme}</span>
+                    <span class="theme-bar-count">+${pros} / -${cons}</span>
+                </div>
+                <div class="theme-bar">
+                    <div class="theme-bar-fill pros" style="width: ${prosWidth}%"></div>
+                </div>
+                <div class="theme-bar" style="margin-top: 4px;">
+                    <div class="theme-bar-fill cons" style="width: ${consWidth}%"></div>
+                </div>
+            `;
+            themeChart.appendChild(container);
+        });
+
+        // Driver Table
+        const driverTable = document.getElementById('driverTable');
+        data.drivers.forEach(driver => {
+            const impact = Math.abs(driver.coefficient);
+            let impactClass = 'low';
+            if (impact > 12) impactClass = 'high';
+            else if (impact > 5) impactClass = 'medium';
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${driver.theme}</td>
+                <td><span class="impact-badge ${impactClass}">${driver.coefficient.toFixed(1)}</span></td>
+                <td>${driver.prevalence}% (n=${driver.count})</td>
+            `;
+            driverTable.appendChild(row);
+        });
+
+        // Segment Stats Helper
+        function renderSegmentStats(containerId, stats, valueKey = 'happiness_index', labelKey = 'site_type') {
+            const container = document.getElementById(containerId);
+            stats.forEach(item => {
+                const label = item[labelKey] || item.level || item.tenure_band;
+                const hi = item[valueKey];
+                const count = item.rating;
+                const hiColor = hi >= 70 ? colors.green : (hi >= 60 ? colors.amber : colors.red);
+                
+                const div = document.createElement('div');
+                div.className = 'segment-stat';
+                div.innerHTML = `
+                    <span class="segment-name">${label}</span>
+                    <span class="segment-values">
+                        <span class="segment-hi" style="color: ${hiColor}">${hi.toFixed(1)}</span>
+                        <span class="segment-count">n=${count}</span>
+                    </span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        renderSegmentStats('siteStats', data.site_stats);
+        renderSegmentStats('levelStats', data.level_stats, 'happiness_index', 'level');
+        renderSegmentStats('tenureStats', data.tenure_stats, 'happiness_index', 'tenure_band');
+
+        // Hotspots
+        const hotspotList = document.getElementById('hotspotList');
+        data.location_stats.slice(0, 5).forEach((loc, idx) => {
+            const div = document.createElement('div');
+            div.className = 'hotspot-item';
+            div.innerHTML = `
+                <span class="hotspot-rank">${idx + 1}</span>
+                <div class="hotspot-info">
+                    <div class="hotspot-name">${loc.location_clean}</div>
+                    <div class="hotspot-meta">${loc.count} reviews</div>
+                </div>
+                <span class="hotspot-hi">${loc.hi.toFixed(1)}</span>
+            `;
+            hotspotList.appendChild(div);
+        });
+
+        // What-If Sliders
+        const whatIfSliders = document.getElementById('whatIfSliders');
+        const sliderState = {};
+        const baselineHI = data.kpi.happiness_index;
+        
+        data.drivers.slice(0, 4).forEach(driver => {
+            sliderState[driver.theme] = 0;
+            
+            const container = document.createElement('div');
+            container.className = 'slider-container';
+            container.innerHTML = `
+                <div class="slider-label">
+                    <span>${driver.theme}</span>
+                    <span class="slider-value" id="val-${driver.theme.replace(/\s+/g, '-')}">0%</span>
+                </div>
+                <input type="range" min="0" max="100" value="0" 
+                    id="slider-${driver.theme.replace(/\s+/g, '-')}"
+                    data-theme="${driver.theme}"
+                    data-coef="${driver.coefficient}"
+                    data-prev="${driver.prevalence}">
+            `;
+            whatIfSliders.appendChild(container);
+        });
+
+        // What-If Calculation
+        function calculatePrediction() {
+            let deltaHI = 0;
+            
+            data.drivers.forEach(driver => {
+                const sliderId = `slider-${driver.theme.replace(/\s+/g, '-')}`;
+                const slider = document.getElementById(sliderId);
+                if (slider) {
+                    const reduction = parseInt(slider.value) / 100;
+                    const prevalenceChange = (driver.prevalence / 100) * reduction;
+                    const impact = driver.coefficient * prevalenceChange * -1;
+                    deltaHI += impact;
+                }
+            });
+            
+            const predictedHI = baselineHI + deltaHI;
+            document.getElementById('predictedHI').textContent = predictedHI.toFixed(1);
+            
+            const deltaEl = document.getElementById('predictedDelta');
+            if (deltaHI > 0.1) {
+                deltaEl.textContent = `+${deltaHI.toFixed(2)} points from baseline`;
+                deltaEl.className = 'prediction-delta positive';
+            } else if (deltaHI < -0.1) {
+                deltaEl.textContent = `${deltaHI.toFixed(2)} points from baseline`;
+                deltaEl.className = 'prediction-delta negative';
+            } else {
+                deltaEl.textContent = 'No change from baseline';
+                deltaEl.className = 'prediction-delta';
+            }
+        }
+
+        // Slider Event Listeners
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.addEventListener('input', function() {
+                const theme = this.dataset.theme;
+                const valId = `val-${theme.replace(/\s+/g, '-')}`;
+                document.getElementById(valId).textContent = `${this.value}%`;
+                calculatePrediction();
+            });
+        });
+    </script>
+</body>
+</html>
